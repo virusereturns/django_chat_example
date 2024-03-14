@@ -1,0 +1,55 @@
+{% extends "components/base.html" %}
+
+{% block title %}Chat Application{% endblock title %}
+
+{% block content %}
+<h1>This is room {{room}}. Welcome dude.</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <input id="message-input" type="text" name="message" placeholder="Enter message">
+  <button id="send-button" type="submit">Send</button>
+</form>
+{% endblock content %}
+
+{% block extrajs %}
+{{room.slug|json_script:"json-room-slug"}}
+{{request.user.username|json_script:"json-username"}}
+<script>
+  const chatRoomSlug = JSON.parse(document.getElementById('json-room-slug').textContent);
+  const username = JSON.parse(document.getElementById('json-username').textContent);
+  console.log("Connected to:", chatRoomSlug);
+  const chatSocket = new WebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/chat/'
+    + chatRoomSlug
+    + '/'
+  );
+  chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    if(data.message){
+      console.log("Received message to client is: ", data.message);
+    }else{
+      console.error('No message in data');
+    }
+  };
+  chatSocket.onclose = function(e) {
+    console.error('Chat socket closed unexpectedly');
+  };
+
+  document.getElementById('send-button').onclick = function(e){
+    e.preventDefault();
+    const messageInput = document.getElementById("message-input");
+    const message = messageInput.value;
+    chatSocket.send(JSON.stringify({
+      'message': message,
+      'username': username,
+      'room': chatRoomSlug,
+    }));
+    messageInput.value = "";
+  }
+</script>
+{% endblock extrajs %}
+
+
