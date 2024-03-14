@@ -1,0 +1,14 @@
+{% extends "components/base.html" %}
+
+{% block title %}Chat Application{% endblock title %}
+
+{% block content %}
+<h1>Chat rooms. How cool.</h1>
+<ul>
+{% for room in chatrooms %}
+<li><a href="{% url "room_detail" room.slug %}">{{ room.name }}</a></li>
+{% endfor %}
+</ul>
+{% endblock content %}
+
+

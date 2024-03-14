@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python stuff
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+
+# SQLite
+*.sqlite3
