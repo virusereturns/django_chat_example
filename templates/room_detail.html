@@ -3,13 +3,30 @@
 {% block title %}Chat Application{% endblock title %}
 
 {% block content %}
-<h1>This is room {{room}}. Welcome dude.</h1>
+<div class="m-10 font-bold">
+  Welcome to the {{room.name}} room
+</div>
 
-<form method="post">
-  {% csrf_token %}
-  <input id="message-input" type="text" name="message" placeholder="Enter message">
-  <button id="send-button" type="submit">Send</button>
-</form>
+<div class="message-container">
+  {% for message in messages %}
+  <div class="message shadow-lg p-3 m-3 rounded-lg w-1/2 bg-blue-300">
+    <div class="text-sm text-gray-500">{{message.user}}</div>
+    {{message.message}}
+    <div class="text-sm text-gray-500">{{message.created}}</div>
+  </div>
+  {% endfor %}
+
+  <div id="chat-messages"></div>
+</div>
+
+<div class="form-container fixed inset-x-0 bottom-0 bg-blue-500 p-10">
+  <form method="post">
+    {% csrf_token %}
+    <input class="rounded-md px-2" id="message-input" type="text" name="message" placeholder="Enter message">
+    <button class="text-white ml-5" id="send-button" type="submit">Send</button>
+  </form>
+</div>
+
 {% endblock content %}
 
 {% block extrajs %}
@@ -30,6 +47,8 @@
     const data = JSON.parse(e.data);
     if(data.message){
       console.log("Received message to client is: ", data.message);
+      let chatmessage = data.username + ": " + data.message + "<br>";
+      document.getElementById('chat-messages').innerHTML += chatmessage;
     }else{
       console.error('No message in data');
     }

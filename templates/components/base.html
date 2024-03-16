@@ -1,9 +1,27 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>{% block title %}Chat page{% endblock title %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Default Title{% endblock title %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    {% block content %}{% endblock content %}
-    {% block extrajs %}{% endblock extrajs %}
+  <nav class="shadow-lg px-3 py-2.5">
+    <div class="container flex flex-wrap justify-between mx-auto">
+      <a class="flex items-center" href="">
+        <img class="h-16 mr-3" src="https://cdn2.iconfinder.com/data/icons/business-development-6/24/Chat_communication_message_talk_chatting_conference-128.png" alt="">
+        <span class="self-center text-4xl font-semibold">Chat app</span>
+      </a>
+      <div class="block w-auto">
+        <ul class="flex flex-col p-4 mt-4 border rounded-lg">
+          <li><a class="block p-2 rounded border bg-blue-500 text-white" href="{% url "room_list" %}">Rooms</a></li>
+          <li><a class="block p-2 rounded border bg-blue-500 text-white" href="#">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  {% block content %}{% endblock content %}
+  {% block extrajs %}{% endblock extrajs %}
 </body>
 </html>

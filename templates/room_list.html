@@ -3,12 +3,14 @@
 {% block title %}Chat Application{% endblock title %}
 
 {% block content %}
-<h1>Chat rooms. How cool.</h1>
-<ul>
+<h1 class="font-bold m-10">Chat rooms. How cool.</h1>
+
+<div class="flex flex-wrap">
 {% for room in chatrooms %}
-<li><a href="{% url "room_detail" room.slug %}">{{ room.name }}</a></li>
+  <a class="shadow-lg p-10 m-10 bg-blue-500 border rounded-lg text-white" href="{% url "room_detail" room.slug %}">{{ room.name }}</a>
 {% endfor %}
-</ul>
+</div>
+
 {% endblock content %}
 
 

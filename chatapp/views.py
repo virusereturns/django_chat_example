@@ -1,3 +1,4 @@
+from typing import Any
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 
@@ -15,4 +16,9 @@ class RoomDetailView(DetailView):
     model = Room
     template_name = 'room_detail.html'
     slug_field = "slug"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        messages = self.object.messages.all()
+        kwargs['messages'] = messages
+        return super().get_context_data(**kwargs)
 
