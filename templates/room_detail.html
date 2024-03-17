@@ -3,23 +3,19 @@
 {% block title %}Chat Application{% endblock title %}
 
 {% block content %}
-<div class="m-10 font-bold">
+<div class="m-5 font-bold">
   Welcome to the {{room.name}} room
 </div>
 
-<div class="message-container">
-  {% for message in messages %}
-  <div class="message shadow-lg p-3 m-3 rounded-lg w-1/2 bg-blue-300">
-    <div class="text-sm text-gray-500">{{message.user}}</div>
-    {{message.message}}
-    <div class="text-sm text-gray-500">{{message.created}}</div>
+<div class="message-container m-10 overflow-auto h-[450px]" id="message-container-id">
+  <div class="chat-messages" id="chat-messages-id">
+    {% for message in messages %}
+    {% include "components/message.html" with username=message.user message=message.message created=message.created %}
+    {% endfor %}
   </div>
-  {% endfor %}
-
-  <div id="chat-messages"></div>
 </div>
 
-<div class="form-container fixed inset-x-0 bottom-0 bg-blue-500 p-10">
+<div class="form-container fixed inset-x-0 bottom-0 bg-blue-500 p-4">
   <form method="post">
     {% csrf_token %}
     <input class="rounded-md px-2" id="message-input" type="text" name="message" placeholder="Enter message">
@@ -45,10 +41,9 @@
   );
   chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    if(data.message){
-      console.log("Received message to client is: ", data.message);
-      let chatmessage = data.username + ": " + data.message + "<br>";
-      document.getElementById('chat-messages').innerHTML += chatmessage;
+    if(data.html){
+      document.getElementById('chat-messages-id').innerHTML += data.html;
+      scrollToBottom();
     }else{
       console.error('No message in data');
     }
@@ -68,6 +63,11 @@
     }));
     messageInput.value = "";
   }
+  function scrollToBottom(){
+    const messageContainer = document.getElementById('message-container-id');
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+  }
+  scrollToBottom();
 </script>
 {% endblock extrajs %}
 

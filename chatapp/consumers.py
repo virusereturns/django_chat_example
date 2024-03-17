@@ -1,9 +1,13 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from asgiref.sync import sync_to_async
-from django.contrib.auth.models import User
-from .models import Room, ChatMessage
 
+from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.utils.timezone import now
+
+from asgiref.sync import sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
+
+from .models import Room, ChatMessage
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -34,9 +38,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Code to send messages to the client
         message = event['message']
         username = event['username']
-        room = event['room']
+        created_str = now()
 
-        await self.send(text_data=json.dumps({'message': message, 'username': username, 'room': room}))
+        # Context data to pass to the template
+        context = {'message': message, 'username': username, 'created': created_str}
+
+        # Render the chat message to an HTML string
+        message_html = render_to_string('components/message.html', context)
+
+        await self.send(text_data=json.dumps({'html': message_html}))
 
     @sync_to_async
     def save_message(self, username, message, room):
